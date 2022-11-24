@@ -1,0 +1,178 @@
+import React, { useState } from "react";
+import Button from "../../UI/Button/Button";
+import { AppStrings } from "../../../utils/AppStrings";
+import ContactDetailsAddForm from "./ContactDetailsAddForm";
+import Input from "../../UI/Input/Input";
+import Dropdown from "../../UI/Dropdown/Dropdown";
+import { useNavigate } from "react-router-dom";
+import useInput from "../../../hooks/use-inputs";
+import { AppEnum } from "../../../utils/AppEnum";
+
+const ContactDetails = () => {
+  const [formField, setFormField] = useState([
+    {
+      contactBelongsTo: "",
+      contactType: "",
+      countryCode: "",
+      mobileNumber: "",
+      imeiNumber: "",
+      remark: "",
+      objectId: "",
+    },
+  ]);
+
+  const handleFormChange = (e, index) => {
+    const { value, name } = e.target;
+    let data = [...formField];
+    let temp = data[index];
+    temp[name] = value;
+    data[index] = temp;
+    setFormField(data);
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+  };
+
+  const addField = (e) => {
+    let object = {
+      contactBelongsTo: "",
+      contactType: "",
+      countryCode: "",
+      mobileNumber: "",
+      imeiNumber: "",
+      remark: "",
+      objectId: "",
+    };
+
+    setFormField([...formField, object]);
+  };
+
+  const removeField = (index) => {
+    console.log(index);
+    let data = [...formField];
+    data.splice(index, 1);
+    setFormField(data);
+  };
+
+  const {
+    // value: contactBelongsto,
+    // ValueChangeHandler: contactBelongsto,
+    hasError: contactBelongstoHasError,
+    isValid: contactBelongstoValid,
+    nameInputBlurHandler: contactBelongstoBlurHandler,
+    reset: contactBelongstoReset,
+  } = useInput((value) => value.length >= 3);
+
+  const contactBelongstoInputClasses = contactBelongstoHasError
+    ? "invalid"
+    : "";
+
+  const inputField = [
+    "contactType",
+    "countryCode",
+    "mobileNumber",
+    "imeiNumber",
+    "remark",
+    "objectId",
+  ];
+
+  const displayInputField = (form, index) => {
+    return inputField.map((field) => (
+      <Input
+        label={AppStrings[field]}
+        type="text"
+        value={form[field]}
+        name={field}
+        // onChange={countryCodeChangeHandler}
+        // onBlur={countryCodeBlurHandler}
+        className={`form-group col-md-4 mb-3`}
+        // error={countryCodeHasError}
+        // errorText={AppStrings.validUsername}
+        placeholder="Enter country code"
+        onChange={(e) => handleFormChange(e, index)}
+      />
+    ));
+  };
+
+  return (
+    <div className="interrogee_container">
+      <form onSubmit={submit}>
+        {formField.map((form, index) => {
+          return (
+            <div className="card mb-2" key={index} uniquekey={index}>
+              <div className="card-header text-center">
+                <h3>ADD NEW CONTACT</h3>
+              </div>
+              <div className="card-body">
+                <div className="row">
+                  <Input
+                    label={AppStrings.contactBelongsTo}
+                    type="text"
+                    name="contactBelongsTo"
+                    value={form.contactBelongsTo}
+                    // onChange={contactBelongstoChangeHandler}
+                    // onBlur={contactBelongstoBlurHandler}
+                    className={`form-group col-md-4 mb-3 ${contactBelongstoInputClasses}`}
+                    // error={contactBelongstoHasError}
+                    errorText={AppStrings.validUsername}
+                    onChange={(e) => handleFormChange(e, index)}
+                    placeholder="Enter police station number"
+                  />
+                  <Dropdown
+                    label="Contact Type"
+                    value={form.contactType}
+                    // onChange={userRoleChangeHandler}
+                    select={"Please select contact type"}
+                    className={`form-group col-md-4 mb-3`}
+                    list={AppEnum.contactType}
+                    onChange={(e) => handleFormChange(e, index)}
+                    // onBlur={userRoleBlurHandler}
+                  />
+                  {displayInputField(form, index)}
+                  {console.log(formField.length)}
+                  {formField.length > 1 && (
+                    <Button
+                      // className={"btn btn-danger"}
+                      type={"remove"}
+                      // disabled={!formIsValid}
+                      onSubmit={true}
+                      btnClassName={"btn btn-danger"}
+                      text={AppStrings.remove}
+                      onClick={() => removeField(index)}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </form>
+      <div className="card-footer d-flex">
+        <Button
+          // className={"btn"}
+          type={"submit"}
+          // disabled={!formIsValid}
+          onSubmit={true}
+          btnClassName={"btn btn-primary btn_color me-2"}
+          text={AppStrings.submit}
+          onClick={submit}
+        />
+
+        <Button
+          // className={"btn btn-danger"}
+          type={"addField"}
+          // disabled={!formIsValid}
+          onSubmit={true}
+          btnClassName={"btn btn-danger"}
+          text={AppStrings.addField}
+          onClick={addField}
+        />
+      </div>
+      {/* <button onClick={addField}>add</button>
+      <button onClick={submit}>submit</button> */}
+    </div>
+  );
+};
+
+export default ContactDetails;
