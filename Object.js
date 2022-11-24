@@ -16,3 +16,11 @@ const obj = {
 // delete name.last;
 // console.log(name);
 obj.sayMyName();
+
+// console.log(Object.keys(obj));
+// console.log(Object.values(obj));
+let array = Object.entries(obj); //it is convert object to array
+const value = array.map((name) => {
+  return name;
+});
+console.log(value, "raman");
